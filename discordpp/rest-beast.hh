@@ -27,9 +27,10 @@ namespace discordpp {
     class RestBeast : public BASE, virtual public BotStruct{
 
     public:
-        virtual json call(http::verb requestType, std::string targetURL, json body) {
+        // Disabled for now, doesn't compile.
+        /*virtual json call(http::verb requestType, std::string targetURL, json body) {
             return BASE::call(to_string(requestType).data(), targetURL, body);
-        }
+        }*/
 
     protected:
         virtual std::pair<json, std::string> doCall(http::verb requestType, std::string targetURL, json body) {
@@ -132,7 +133,7 @@ namespace discordpp {
         }
 
         virtual std::pair<json, std::string> doCall(std::string requestType, std::string targetURL, json body) override {
-            return call(http::string_to_verb(requestType), targetURL, body);
+            return doCall(http::string_to_verb(requestType), targetURL, body);
         }
     };
 }
