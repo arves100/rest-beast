@@ -25,8 +25,14 @@ namespace discordpp {
 
     template<class BASE>
     class RestBeast : public BASE, virtual public BotStruct{
+
     public:
         virtual json call(http::verb requestType, std::string targetURL, json body) {
+            return BASE::call(to_string(requestType).data(), targetURL, body);
+        }
+
+    protected:
+        virtual std::pair<json, std::string> doCall(http::verb requestType, std::string targetURL, json body) {
             std::string host = "discordapp.com";
             std::ostringstream target;
             target << "/api/v" << apiVersion << targetURL;
@@ -122,10 +128,10 @@ namespace discordpp {
                     std::cout << "Discord API sent a message: \"" << message << "\"" << std::endl;
                 }
             }
-            return jres;
+            return {jres, ""};
         }
 
-        virtual json call(std::string requestType, std::string targetURL, json body) override {
+        virtual std::pair<json, std::string> doCall(std::string requestType, std::string targetURL, json body) override {
             return call(http::string_to_verb(requestType), targetURL, body);
         }
     };
