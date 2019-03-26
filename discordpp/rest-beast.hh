@@ -33,7 +33,7 @@ namespace discordpp {
         }*/
 
     protected:
-        virtual std::pair<json, std::string> doCall(http::verb requestType, std::string targetURL, json body) {
+        virtual std::pair<json, std::string> doCall(const http::verb& requestType, const std::string& targetURL, const json& body) {
             std::string host = "discordapp.com";
             std::ostringstream target;
             target << "/api/v" << apiVersion << targetURL;
@@ -132,7 +132,7 @@ namespace discordpp {
             return {jres, ""};
         }
 
-        virtual std::pair<json, std::string> doCall(std::string requestType, std::string targetURL, json body) override {
+        virtual std::pair<json, std::string> doCall(const std::string& requestType, const std::string& targetURL, const json& body) override {
             return doCall(http::string_to_verb(requestType), targetURL, body);
         }
     };
