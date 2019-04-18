@@ -24,8 +24,8 @@ namespace discordpp {
 
     template<class BASE>
     class RestBeast : public BASE, virtual public BotStruct{
-    public:
-        virtual json call(http::verb requestType, std::string targetURL, json body) {
+    protected:
+        virtual json doCall(http::verb requestType, std::string targetURL, json body) {
             std::string host = "discordapp.com";
             std::ostringstream target;
             target << "/api/v" << apiVersion << targetURL;
@@ -115,7 +115,8 @@ namespace discordpp {
             if(jres.find("message") != jres.end()){
                 std::string message = jres["message"].get<std::string>();
                 if(message == "You are being rate limited."){
-                    throw (ratelimit){jres["retry_after"].get<int>()};
+                	ratelimited(jres["global"].get<bool>(), jres["retry_after"].get<unsigned long long>(), requestType, targetURL, body);
+                    //throw (ratelimit){jres["retry_after"].get<int>()};
                     //std::this_thread::sleep_for(std::chrono::milliseconds(returned["retry_after"].get<int>()));
                 }else if(message != "") {
                     std::cout << "Discord API sent a message: \"" << message << "\"" << std::endl;
@@ -124,7 +125,7 @@ namespace discordpp {
             return jres;
         }
 
-        virtual json call(std::string requestType, std::string targetURL, json body) override {
+        virtual json doCall(std::string requestType, std::string targetURL, json body) override {
             return call(http::string_to_verb(requestType), targetURL, body);
         }
     };
